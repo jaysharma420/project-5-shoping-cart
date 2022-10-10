@@ -1,0 +1,26 @@
+{
+  "name": "project-5-shoping-cart",
+  "version": "1.0.0",
+  "description": "shoping-cart",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaysharma420/project-5-shoping-cart.git"
+  },
+  "author": "group41",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaysharma420/project-5-shoping-cart/issues"
+  },
+  "homepage": "https://github.com/jaysharma420/project-5-shoping-cart#readme",
+  "dependencies": {
+    "aws": "^0.0.3-2",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.6.5",
+    "nodemon": "^2.0.20"
+  }
+}
