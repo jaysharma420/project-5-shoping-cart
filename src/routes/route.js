@@ -2,11 +2,21 @@ const express = require('express')
 const router = express.Router()
 const { createUser, userLogin, getUser, updateUser } = require('../controllers/UserController')
 const { authorization1, authentication } = require('../middlewares/auth')
+const { createproduct, getproduct, getproductbyid, updateproduct, deleteproduct } = require('../controllers/ProductController')
 
+// ---------------------------USER--------------------------------------------
 router.post('/register', createUser)
 router.post('/login', userLogin)
 router.get('/user/:userId/profile', authentication, getUser)
 router.put('/user/:userId/profile', authentication, authorization1, updateUser)
+
+// ------------------------------PRODUCT--------------------------------------
+router.post('/products', createproduct)
+router.get('/products', getproduct)
+router.get('/products/:productId', getproductbyid)
+router.put('/products/:productId', updateproduct)
+router.delete('/products/:productId', deleteproduct)
+
 
 
 router.all("/*", function (req, res) {
