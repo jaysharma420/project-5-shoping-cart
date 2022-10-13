@@ -7,7 +7,9 @@ const isPresent = function (value) {
 const isValidName = function (name) {
     return (/^[a-zA-Z ]{2,30}$/).test(name)
 }
-
+const isValidadd = function(value){
+    return (/^[a-zA-Z_ ,.-]{2,50}$/).test(value)
+}
 const isValidEmail = function (email) {
     return (/^[a-z0-9][a-z0-9-_\.]+@([a-z]|[a-z0-9]?[a-z0-9-]+[a-z0-9])\.[a-z0-9]{2,10}(?:\.[a-z]{2,10})?$/).test(email)
 }
@@ -31,4 +33,4 @@ const isValidPin = function (pin) {
 }
 
 
-module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin}
+module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd}
