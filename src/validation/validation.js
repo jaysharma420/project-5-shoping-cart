@@ -31,6 +31,12 @@ const isValidPassword = function (password) {
 const isValidPin = function (pin) {
     return /^\+?([1-9]{1})\)?([0-9]{5})$/.test(pin);
 }
+const isValidPrice = function (price) {
+    return /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price);
+}
+const isValid = function(value){
+    return (/^[a-zA-Z0-9_ ,.-@#()]{2,10000}$/).test(value)
+}
 
 
-module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd}
+module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid}

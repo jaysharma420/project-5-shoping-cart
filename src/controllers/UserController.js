@@ -16,7 +16,7 @@ const createUser = async function (req, res) {
         const data = req.body
         const file = req.files
 
-        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Please Enter data to Create the User" })
+        if (Object.keys(data).length == 0 && typeof(file) == 'undefined') return res.status(400).send({ status: false, message: "Please Enter data to Create the User" })
         const { fname, lname, email, phone, password, address } = data
         console.log(typeof (fname));
         console.log(typeof (phone));
