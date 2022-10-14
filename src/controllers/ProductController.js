@@ -185,7 +185,35 @@ const updateproduct = async function (req, res) {
 
 }
 const deleteproduct = async function (req, res) {
+    try {
+        const productId = req.params.productId;
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res
+                .status(400)
+                .send({ status: false, message: "Invalid product id" });
+        }
 
+        const productById = await productModel.findOne({
+            _id: productId,
+            isDeleted: false,
+            deletedAt: null,
+        });
+
+        if (!productById) {
+            return res.status(404).send({
+                status: false,
+                message: "No product found by this product id",
+            });
+        }
+
+        const mark = await productModel.findOneAndUpdate({ _id: productId }, { $set: { isDeleted: true, deletedAt: Date.now() } });
+
+        res
+            .status(200)
+            .send({ status: true, message: "Product successfully deleted" });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
 }
 
 module.exports = { createproduct, getproduct, getproductbyid, updateproduct, deleteproduct }
