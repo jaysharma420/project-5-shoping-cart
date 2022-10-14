@@ -1,6 +1,8 @@
 const productModel = require('../models/ProductModel')
-const { isPresent, isValidPrice,isValidadd, isValid } = require('../validation/validation')
+const mongoose = require('mongoose')
+const { isPresent, isValidPrice,isValidadd, isValid ,isValidSize} = require('../validation/validation')
 const { uploadFile } = require('../AWS/aws')
+const Objectid = mongoose.Types.ObjectId.isValid
 
 const createproduct = async function (req, res) {
     try {
@@ -80,10 +82,13 @@ const createproduct = async function (req, res) {
         }
             let size = availableSizes.toUpperCase().split(",")
             console.log(size);
+            if(!isValidSize(size)){
+            return res.status(400).send({ status: false, message: 'availablesizes possible value only ["S", "XS","M","X", "L","XXL", "XL"]'})   
+            }
+
             data.availableSizes = size;
         }
         if (typeof (installments) !== 'undefined') {
-
         if (!(installments || typeof installments == Number)) {
             return res.status(400).send({ status: false, message: "Installments should in correct format" })
         }}
@@ -169,12 +174,10 @@ const getproductbyid = async function (req, res) {
     try {
         const productId = req.params.productId
 
-        if (!isValidObjectId(productId))
-            return res.status(500).send({ status: false, msg: 'please enter a valid productId!!' })
+        if (!Objectid(productId)) return res.status(400).send({ status: false, msg: 'please enter a valid productId!!' })
 
-        const findProduct = await productModel.findOne({ _Id: productId, isDeleted: false })
-        if (!findProduct) return res.status(400).send({ status: false, msg: 'product not found or product is deleted!!!' })
-
+        const findProduct = await productModel.findOne({ _id: productId, isDeleted: false })
+        if (!findProduct) return res.status(404).send({ status: false, msg: 'product not found or product is deleted!!!' })
         res.status(200).send({ status: true, data: productId })
     }
     catch (err) {

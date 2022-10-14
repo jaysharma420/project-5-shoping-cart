@@ -37,6 +37,8 @@ const isValidPrice = function (price) {
 const isValid = function(value){
     return (/^[a-zA-Z0-9_ ,.-@#()]{2,10000}$/).test(value)
 }
+const isValidSize = function(value){
+  return  ["S", "XS","M","X", "L","XXL", "XL"].includes(value)
+}
 
-
-module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid}
+module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid,isValidSize}
