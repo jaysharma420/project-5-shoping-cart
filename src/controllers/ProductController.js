@@ -80,26 +80,35 @@ const createproduct = async function (req, res) {
         if (!isPresent(availableSizes)) {
             return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
         }
+        let size = availableSizes.toUpperCase().split(",")
+        let checkSizes=["S", "XS","M","X", "L","XXL", "XL"]
+        let arraySize=size
+        for(let i=0;i<arraySize.length;i++){
+            if(checkSizes.includes(arraySize[i]))
+            continue;
+            else
+            return res.status(400).send({status:false,message:"Sizes should in this ENUM only S/XS/M/X/L/XXL/XL"})
+        }
         // if(!["S", "XS","M","X", "L","XXL", "XL"].includes(availableSizes)) return res.status(400).send({ status: false, message: 'availablesizes possible value only [S, XS,M,X, L,XXL, XL]'})
         // if(typeof(JSON.parse(availableSizes)) !== "object") return res.status(400).send({status:false,msg:"put value in array of strings"})
-        //     let size = availableSizes.toUpperCase().split(",")
+            // let size = availableSizes.toUpperCase().split(",")
         //     console.log(size);
         //     if(!isValidSize(size)){
         //     return res.status(400).send({ status: false, message: 'availablesizes possible value only ["S", "XS","M","X", "L","XXL", "XL"]'})   
         //     }
         //     data.availableSizes = size;
-        console.log(availableSizes.split(",").length);
-if(availableSizes.split(",").length===1){
-    if(!["S", "XS","M","X", "L","XXL", "XL"].includes(availableSizes)) return res.status(400).send({ status: false, message: 'availablesizes possible value only [S, XS,M,X, L,XXL, XL]'})
-}else{
-    try{
-console.log(JSON.parse(availableSizes));
-    }catch(err){
-        return res.status(400).send({status:false,message:"put value in array of string"})
-    }
-}
+//         console.log(availableSizes.split(",").length);
+// if(availableSizes.split(",").length===1){
+//     if(!["S", "XS","M","X", "L","XXL", "XL"].includes(availableSizes)) return res.status(400).send({ status: false, message: 'availablesizes possible value only [S, XS,M,X, L,XXL, XL]'})
+// }else{
+//     try{
+// console.log(JSON.parse(availableSizes));
+//     }catch(err){
+//         return res.status(400).send({status:false,message:"put value in array of string"})
+//     }
+// }
 
-        }
+      }
         if (typeof (installments) !== 'undefined') {
         if (!/^[0-9]{1,4}$/.test(installments)) {
             return res.status(400).send({ status: false, message: "Installments must be a integer number and can't be empty" })
@@ -123,14 +132,16 @@ const getproduct = async function (req, res) {
         let data = req.query
 
         let { name, pricesort, size, priceGreaterthan, priceLessThan } = data
-        if (pricesort) {
-            if (!pricesort == -1 || !pricesort == 1) { return res.status(400).send({ status: false, message: "Please enter valid price pricesort" }) }
+        if (typeof(pricesort)!== 'undefined') {
+
+            if (!(pricesort == -1 || pricesort == 1)) { return res.status(400).send({ status: false, message: "Please enter valid price pricesort -1 or 1 " }) }
         }
 
         let filter = { isDeleted: false }
 
          
-    if(size){
+    if(typeof(size)!=="undefined"){
+        console.log(size)
         let checkSizes=["S", "XS","M","X", "L","XXL", "XL"]
         let arraySize=size.split(",")
         for(let i=0;i<arraySize.length;i++){
@@ -143,12 +154,15 @@ const getproduct = async function (req, res) {
       
     }
    
-        if(name){
+        if(typeof(name)!=="undefined"){
+            console.log("name")
             if (!isPresent(name)) return res.status(400).send({ status: false, message: "name is in incorrect format" })
             filter["title"] = {"$regex": name};
         }
+      
+        if (typeof(priceLessThan)!=="undefined") {
+            console.log("priceLessThan or priceLessThan")
 
-        if (priceLessThan) {
             if (!isValidPrice(priceLessThan)) {
                 return res.status(400).send({ status: false, message: " please enter valid price " })
             }
@@ -156,7 +170,7 @@ const getproduct = async function (req, res) {
             filter['price'] = { $lt: priceLessThan }
         }
 
-        if (priceGreaterthan) {
+        if (typeof(priceGreaterthan)!=="undefined" ) {
 
             if (!isValidPrice(priceGreaterthan)) {
                 return res.status(400).send({ status: false, message: " please enter valid price " })
@@ -164,7 +178,7 @@ const getproduct = async function (req, res) {
 
             filter['price'] = { $gt: priceGreaterthan }
         }
-        if (priceGreaterthan && priceLessThan) {
+        if (typeof(priceGreaterthan)!=="undefined"  && typeof(priceLessThan)!=="undefined" ) {
             filter['price'] = { $lt: priceLessThan, $gt: priceGreaterthan }
         }
 
@@ -302,11 +316,11 @@ const deleteproduct = async function (req, res) {
 
         const mark = await productModel.findOneAndUpdate({ _id: productId }, { $set: { isDeleted: true, deletedAt: Date.now() } });
 
-        res
+      return   res
             .status(200)
             .send({ status: true, message: "Product successfully deleted" });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+       return  res.status(500).send({status:false, error: error.message });
     }
 }
 
