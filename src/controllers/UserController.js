@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 // const aws = require('aws-sdk')
 const Objectid = mongoose.Types.ObjectId.isValid
-const { isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin ,isValidadd} = require('../validation/validation')
+const { isPresent, isValidName, isValidEmail,isValidPhone, isValidPassword, isValidPin ,isValidadd} = require('../validation/validation')
 
 const { uploadFile } = require('../AWS/aws')
 
