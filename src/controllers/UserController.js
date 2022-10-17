@@ -98,7 +98,7 @@ const createUser = async function (req, res) {
 const userLogin = async function (req, res) {
     try {
         let { email, password } = req.body
-        const encyptPassword = await bcrypt.hash(password, 10)
+        // const encyptPassword = await bcrypt.hash(password, 10)
         // console.log(encyptPassword);
         if (Object.entries(req.body).length === 0) {
             return res.status(400).send({ status: false, message: "Please enter email and Password" })
@@ -126,7 +126,7 @@ const userLogin = async function (req, res) {
             id: data._id.toString(),
             exp: (Date.now() / 1000) + 60 * 60 * 24 * 14
         }, "mykey")
-        return res.status(201).send({ status: true, message: "user login successfull", data: { userid: data._id, token: token } })
+        return res.status(200).send({ status: true, message: "user login successfull", data: { userid: data._id, token: token } })
     } catch (error) {
         return res.status(500).send({ msg: error.message, status: false })
     }

@@ -19,7 +19,7 @@ const createproduct = async function (req, res) {
             return res.status(400).send({ status: false, message: "Title is mandatory or title can't be an empty string" })
         }
         if (!isValidadd(title)) {
-            return res.status(400).send({ status: false, message: "Title contains only [a-zA-Z_ ,.-] " })
+            return res.status(400).send({ status: false, message: "Title contains only [a-zA-Z0-9_ ,.-] " })
         }
         if (await productModel.findOne({ title })) return res.status(400).send({ status: false, message: "This title is already exists" })
 
