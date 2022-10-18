@@ -18,10 +18,10 @@ router.put('/products/:productId', updateproduct)
 router.delete('/products/:productId', deleteproduct)
 
 // ---------------------------------CART----------------------------------------------
-router.post('/users/:userId/cart',createcart)
-router.put('/users/:userId/cart',updatecart)
-router.get('/users/:userId/cart',getcart)
-router.delete('/users/:userId/cart',deletecart)
+router.post('/users/:userId/cart',authentication,authorization1,createcart)
+router.put('/users/:userId/cart',authentication,authorization1,updatecart)
+router.get('/users/:userId/cart',authentication,authorization1,getcart)
+router.delete('/users/:userId/cart',authentication,authorization1,deletecart)
 
 router.all("/*", function (req, res) {
     return res.status(400).send({
