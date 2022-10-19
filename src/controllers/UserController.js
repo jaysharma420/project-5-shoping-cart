@@ -37,7 +37,6 @@ const createUser = async function (req, res) {
 
         if (!isPresent(file)) return res.status(400).send({ status: false, message: "profile Image can't be empty" })
 
-        // if (!isValidImg(profileImage)) return res.status(400).send({ status: false, message: "profile Image should be valid with this extensions .png|.jpg|.gif" })
 
         if (!isPresent(phone)) return res.status(400).send({ status: false, message: "Phone is mandatory" })
         if (!isValidPhone(phone)) return res.status(400).send({ status: false, message: "please provide Valid phone Number with 10 digits starts with 6||7||8||9" })
@@ -45,7 +44,7 @@ const createUser = async function (req, res) {
         if (await userModel.findOne({ phone })) return res.status(400).send({ status: false, message: "This Phone is already Registered Please give another Phone" })
 
         if (!isPresent(password)) return res.status(400).send({ status: false, message: "Password is mandatory" })
-        if (!isValidPassword(password)) return res.status(400).send({ status: false, message: "please provide Valid password with 1st letter should be Capital letter and contains spcial character with Min length 8 and Max length 15" })
+        if (!isValidPassword(password)) return res.status(400).send({ status: false, message: "password must have one capital one small one number and one special character[#?!@$%^&*-]" })
 
         // // ---------> Address <---------
 
@@ -78,49 +77,14 @@ const createUser = async function (req, res) {
         if (!address.hasOwnProperty("shipping")) return res.status(400).send({ status: false, message: "Shipping Address is required " })
         if (!address.hasOwnProperty("billing")) return res.status(400).send({ status: false, message: "billing Address is required " })
 
-        if (Object.keys(remaining).length > 0) return res.status(400).send({ status: false, message: "Invalid attribute in address body" })
-
-        if (typeof shipping !== "object") return res.status(400).send({ status: false, message: "shipping should be an object" })
-        if (!shipping.hasOwnProperty("street")) return res.status(400).send({ status: false, message: "Shipping street is required " })
-        if (!shipping.hasOwnProperty("city")) return res.status(400).send({ status: false, message: "Shipping city is required " })
-        if (!shipping.hasOwnProperty("pincode")) return res.status(400).send({ status: false, message: "Shipping pincode is required " })
-
-        if (!isValids(shipping.street)) return res.status(400).send({ status: false, message: " shipping street is invalid " })
-        if (!isValidName(shipping.city)) return res.status(400).send({ status: false, message: "Shipping city is invalid" })
-        if (!isValidPin(shipping.pincode)) return res.status(400).send({ status: false, message: " shipping pincode is invalid. There must be six digits" })
-
-
-
-        if (typeof billing !== "object") return res.status(400).send({ status: false, message: "billing should be an object" })
-        if (!billing.hasOwnProperty("street")) return res.status(400).send({ status: false, message: "billing street is required " })
-        if (!billing.hasOwnProperty("city")) return res.status(400).send({ status: false, message: "billing city is required " })
-        if (!billing.hasOwnProperty("pincode")) return res.status(400).send({ status: false, message: "billing pincode is required " })
-
-        if (!isValids(billing.street)) return res.status(400).send({ status: false, message: " billing street is invalid " }) 
-        if (!isValids(billing.city)) return res.status(400).send({ status: false, message: "billing city is invalid" })
-        if (!isValidPin(billing.pincode)) return res.status(400).send({ status: false, message: " billing pincode is invalid. There must be six digits" })
-   
-        data.address = address
-       // data.address=address
-        // const profileImg = await imgUpload.uploadFile(files[0])
-        const encyptPassword = await bcrypt.hash(password, 10)
 
         if (file && file.length > 0) {
-            //upload to s3 and get the uploaded link
-            // res.send the link back to frontend/postman
-            // let Image =await uploadFile(file[ 0])
-            // console.log(Image);
             data.profileImage = await uploadFile(file[0])
-            // console.log(data);
-
         }
         else {
-            return res.status(400).send({ msg: "PROFILE IMAGE FILE IS REQUIRED" })
+            return res.status(400).send({status:false, message: "PROFILE IMAGE FILE IS REQUIRED" })
         }
-        data.password = encyptPassword
-       
-        // console.log(data);
-
+        data.password = await bcrypt.hash(password, 10)
 
         let createdata = await userModel.create(data)
         return res.status(201).send({ status: true, message: "user created", data: createdata })
@@ -132,8 +96,6 @@ const createUser = async function (req, res) {
 const userLogin = async function (req, res) {
     try {
         let { email, password } = req.body
-        // const encyptPassword = await bcrypt.hash(password, 10)
-        // console.log(encyptPassword);
         if (Object.entries(req.body).length === 0) {
             return res.status(400).send({ status: false, message: "Please enter email and Password" })
         }
@@ -144,17 +106,16 @@ const userLogin = async function (req, res) {
             return res.status(400).send({ status: false, message: "Please enter Password" })
         }
         if (isValidEmail(email) == false) {
-            return res.status(400).send({ status: false, message: "Please enter correct Email" })
+            return res.status(400).send({ status: false, message: "Please enter Email in correct format like jay58@gmail.com" })
         }
         if (!isValidPassword(password)) {
-            return res.status(400).send({ status: false, message: "Please enter correct Password" })
+            return res.status(400).send({ status: false, message: "password must have one capital one small one number and one special character[#?!@$%^&*-]" })
         }
         let data = await userModel.findOne({ email: email })
         if (!data) {
             return res.status(404).send({ status: false, message: "User not found with this email" })
         }
-        let hash = data.password
-        let checkpassword = await bcrypt.compare(password, hash);
+        let checkpassword = await bcrypt.compare(password, data.password);
         if (!checkpassword) return res.status(400).send({ status: false, message: "login failed this password not matches with email" })
         const token = jwt.sign({
             id: data._id.toString(),
