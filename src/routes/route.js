@@ -24,8 +24,7 @@ router.get('/users/:userId/cart',authentication,authorization1,getcart)
 router.delete('/users/:userId/cart',authentication,authorization1,deletecart)
 
 router.all("/*", function (req, res) {
-    return res.status(400).send({
-        status: false, message: "Make Sure Your Endpoint is Correct !!!"
-    })
+    return res.status(400).send({ status: false, message: "Make Sure Your Endpoint is Correct !!!"
+})
 })
 module.exports = router

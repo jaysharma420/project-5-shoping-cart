@@ -9,8 +9,6 @@ const authentication = async function (req, res,next) {
 try {
 // let token = req.headers["authorization"].substring(7)
  let token = req.headers["authorization"].split(" ")[1]
-// console.log(token);
-// console.log(req.headers);
 if(!token){return res.status(400).send({status:false,message:"please enter token"})}
 let decodetoken ;
 try {
@@ -36,10 +34,10 @@ const authorization1 = async function (req, res,next) {
 
     const findUseridInDb=await userModel.findById(userId)
     if(!findUseridInDb){
-        return res.status(400).send({status:false,message:`there is no data with this  ${userId}  id in database`})
+        return res.status(404).send({status:false,message:`there is no data with this  ${userId}  id in database`})
     }
 
-if(req.token.id != userId) return res.status(404).send({status:false,message:"authorization failed,userid and token are not of the same user"})
+if(req.token.id != userId) return res.status(403).send({status:false,message:"authorization failed,userid and token are not of the same user"})
 next()
 
 }catch(err){
