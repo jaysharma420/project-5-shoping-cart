@@ -76,22 +76,22 @@ const createproduct = async function (req, res) {
             return res.status(400).send({ status: false, message: "Style containt only [a-zA-Z0-9_ ,.-@#()]" })
         }
     }
-    if (typeof (availableSizes) !== 'undefined') {
-        if (!isPresent(availableSizes)) {
-            return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
-        }
-        let size = availableSizes.toUpperCase().split(",") 
-        data.availableSizes = size
+    
+        if (typeof (availableSizes) !== 'undefined') {
+            if (!isPresent(availableSizes)) {
+                return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
+            }
+            let size = availableSizes.toUpperCase().split(",") 
+            for(let i=0;i<size;i++){
+                if(!isValidSize(size[i])){
+                    return res.status(400).send({ statu:"false",message:"Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]"})
+                }
+            }  
+            data.availableSizes = size
+          }
     
 
-        for(let i=0;i<data.availableSizes;i++){
-            if(!isValidSize(data.availableSizes[i])){
-                return res.status(400).send({ statu:"false",message:"Sizes should in this ENUM only S/XS/M/X/L/XXL/XL"})
-            }
-        }
-        
-      }
-
+      
         if (typeof (installments) !== 'undefined') {
         if (!/^[0-9]{1,4}$/.test(installments)) {
             return res.status(400).send({ status: false, message: "Installments must be a integer number and can't be empty" })
@@ -187,7 +187,7 @@ const getproductbyid = async function (req, res) {
 
         const findProduct = await productModel.findOne({ _id: productId, isDeleted: false })
         if (!findProduct) return res.status(404).send({ status: false, msg: 'product not found with this productId!!!' })
-        res.status(200).send({ status: true, data: findProduct })
+       return  res.status(200).send({ status: true, data:findProduct })
     }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message })
