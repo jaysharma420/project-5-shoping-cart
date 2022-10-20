@@ -6,26 +6,26 @@ aws.config.update({
     region: "ap-south-1"
 })
 
-let uploadFile = async ( file) =>{
-   return new Promise( function(resolve, reject) {
-    let s3= new aws.S3({apiVersion: '2006-03-01'}); // we will be using the s3 service of aws
+let uploadFile = async (file) => {
+    return new Promise(function (resolve, reject) {
+        let s3 = new aws.S3({ apiVersion: '2006-03-01' }); // we will be using the s3 service of aws
 
-    var uploadParams= {
-        ACL: "public-read",
-        Bucket: "classroom-training-bucket",  //HERE
-        Key:  "abc/"  + file.originalname, //HERE 
-        Body: file.buffer
-    }
-    s3.upload( uploadParams, function (err, data ){
-        if(err) {
-            return reject({"error": err})
+        var uploadParams = {
+            ACL: "public-read",
+            Bucket: "classroom-training-bucket",  //HERE
+            Key: "abc/" + file.originalname, //HERE 
+            Body: file.buffer
         }
-       
-        return resolve(data.Location)
-        
+        s3.upload(uploadParams, function (err, data) {
+            if (err) {
+                return reject({ "error": err })
+            }
+
+            return resolve(data.Location)
+
+        })
     })
-   })
 }
 
 
-module.exports ={uploadFile}
+module.exports = { uploadFile }

@@ -7,7 +7,7 @@ const isPresent = function (value) {
 const isValidName = function (name) {
     return (/^[a-zA-Z ]{2,30}$/).test(name)
 }
-const isValidadd = function(value){
+const isValidadd = function (value) {
     return (/^[a-zA-Z0-9_ ,.-]{2,50}$/).test(value)
 }
 const isValidEmail = function (email) {
@@ -34,14 +34,14 @@ const isValidPin = function (pin) {
 const isValidPrice = function (price) {
     return /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price);
 }
-const isValid = function(value){
+const isValid = function (value) {
     return (/^[a-zA-Z0-9_ ,.-@#()]{2,10000}$/).test(value)
 }
-const isValidSize = function(value){
-  return  ["S", "XS","M","X", "L","XXL", "XL"].includes(value)
+const isValidSize = function (value) {
+    return ["S", "XS", "M", "X", "L", "XXL", "XL"].includes(value)
 
 }
-const parseJSONSafely=(str)=> {
+const parseJSONSafely = (str) => {
     try {
         return JSON.parse(str);
     } catch (e) {
@@ -54,6 +54,8 @@ const isValids = (value) => {
     return true;
 }
 
-module.exports = {isPresent,parseJSONSafely,
-     isValidName, isValidEmail, isValidImg, 
-     isValids ,isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid,isValidSize}
+module.exports = {
+    isPresent, parseJSONSafely,
+    isValidName, isValidEmail, isValidImg,
+    isValids, isValidPhone, isValidPassword, isValidPin, isValidadd, isValidPrice, isValid, isValidSize
+}
