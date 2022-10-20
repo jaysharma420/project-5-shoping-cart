@@ -61,6 +61,10 @@ let orderdata = await orderModel.findone({_id:orderId,userId:userId})
 if(!orderdata)return res.status(404).send({status:false,message:"no order found with this orderid and userid"})
 if(orderdata.cancellable==="false")return res.status(404).send({status:false,message:"can't update order status, cancellable key is false"})
 
+if(typeof(status)==="undefined")return res.status(400).send({status:false,message:"please enter status to update"})
+
+if(orderdata.status===status) return res.status(400).send({status:false,message:"this status is already present enter another one"})
+
 }
 
 module.exports = {createorder,updateorder}

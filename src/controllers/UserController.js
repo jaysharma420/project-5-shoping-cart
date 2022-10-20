@@ -93,7 +93,7 @@ const userLogin = async function (req, res) {
         if (!isPresent(password)) {
             return res.status(400).send({ status: false, message: "Please enter Password" })
         }
-        if (isValidEmail(email) == false) {
+        if (!isValidEmail(email)) {
             return res.status(400).send({ status: false, message: "Please enter Email in correct format like jay58@gmail.com" })
         }
         if (!isValidPassword(password)) {
@@ -105,6 +105,7 @@ const userLogin = async function (req, res) {
         }
         let checkpassword = await bcrypt.compare(password, data.password);
         if (!checkpassword) return res.status(400).send({ status: false, message: "login failed this password not matches with email" })
+
         const token = jwt.sign({
             id: data._id.toString(),
             exp: (Date.now() / 1000) + 60 * 60 * 24 * 14
@@ -116,15 +117,17 @@ const userLogin = async function (req, res) {
 }
 const getUser = async function (req, res) {
     try {
+
         let userId = req.params.userId
         if (!Objectid(userId)) {
-            return re.status(400).send({ status: false, message: " PLEASE ENTER CORRECT USER ID" })
+            return res.status(400).send({ status: false, message: " PLEASE ENTER CORRECT USER ID" })
         }
         const findUseridInDb = await userModel.findById(userId)
         if (!findUseridInDb) {
             return res.status(400).send({ status: false, message: "THIS USER IS NOT PRESENT IN OUR MONGODB" })
         }
         return res.status(200).send({ status: true, message: "USER PROFILE DETAILS", data: findUseridInDb })
+
     } catch (error) {
         return res.status(500).send({ msg: error.message, status: false })
     }
@@ -136,7 +139,7 @@ const updateUser = async function (req, res) {
     try {
         let data = req.body
         let file = req.files
-
+// //console.log(file);
         if (Object.keys(data).length == 0 && typeof(file) == 'undefined') return res.status(400).send({ status: false, message: "Please Enter data to update the User" })
 
         if (file && file.length > 0) {
@@ -155,7 +158,7 @@ const updateUser = async function (req, res) {
 
         if (data["address.shipping.pincode"] === "") { return res.status(400).send({ status: false, message: "you can't update shipping pincode as a empty string" }) }
 
-        const { fname, lname, email, phone, password, address } = data
+        const { fname, lname, email, phone, password, address } = req.body
 
         if (fname === "") return res.status(400).send({ status: false, message: "you can't update fname as a empty string" })
         if (lname === "") return res.status(400).send({ status: false, message: "you can't update lname as a empty string" })
