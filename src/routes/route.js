@@ -4,12 +4,12 @@ const { createUser, userLogin, getUser, updateUser } = require('../controllers/U
 const { authorization1, authentication } = require('../middlewares/auth')
 const { createproduct, getproduct, getproductbyid, updateproduct, deleteproduct } = require('../controllers/ProductController')
 const {createcart,updatecart,getcart,deletecart} = require('../controllers/Cartcontroller')
-const {createorder,updateorder} = require('../controllers/ordeeController')
+const {createorder,updateorder} = require('../controllers/orderController')
 
 // ---------------------------USER--------------------------------------------
 router.post('/register', createUser)
 router.post('/login', userLogin)
-router.get('/user/:userId/profile', authentication, getUser)
+router.get('/user/:userId/profile', authentication,authorization1, getUser)
 router.put('/user/:userId/profile', authentication, authorization1, updateUser)
 
 // ------------------------------PRODUCT--------------------------------------

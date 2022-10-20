@@ -82,7 +82,7 @@ const createproduct = async function (req, res) {
                 return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
             }
             let size = availableSizes.toUpperCase().split(",") 
-            for(let i=0;i<size;i++){
+            for(let i=0;i<size.length;i++){
                 if(!isValidSize(size[i])){
                     return res.status(400).send({ statu:"false",message:"Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]"})
                 }
@@ -115,6 +115,7 @@ const getproduct = async function (req, res) {
         let data = req.query
 
         let { name, pricesort, size, priceGreaterthan, priceLessThan } = data
+        
         if (typeof(pricesort)!== 'undefined') {
 
             if (!(pricesort == -1 || pricesort == 1)) { return res.status(400).send({ status: false, message: "Please enter valid price pricesort -1 or 1 " }) }
@@ -123,19 +124,32 @@ const getproduct = async function (req, res) {
         let filter = { isDeleted: false }
 
          
-    if(typeof(size)!=="undefined"){
-        console.log(size)
-        let checkSizes=["S", "XS","M","X", "L","XXL", "XL"]
-        let arraySize=size.split(",")
-        for(let i=0;i<arraySize.length;i++){
-            if(checkSizes.includes(arraySize[i]))
-            continue;
-            else
-            return res.status(400).send({status:false,message:"Sizes should in this ENUM only S/XS/M/X/L/XXL/XL"})
-        }
-        filter.availableSizes={$in:arraySize}
+    // if(typeof(size)!=="undefined"){
+    //     console.log(size)
+    //     let checkSizes=["S", "XS","M","X", "L","XXL", "XL"]
+    //     let arraySize=size.split(",")
+    //     for(let i=0;i<arraySize.length;i++){
+    //         if(checkSizes.includes(arraySize[i]))
+    //         continue;
+    //         else
+    //         return res.status(400).send({status:false,message:"Sizes should in this ENUM only S/XS/M/X/L/XXL/XL"})
+    //     }
+    //     filter.availableSizes={$in:arraySize}
       
-    }
+    // }
+
+    if (typeof (size) !== 'undefined') {
+        if (!isPresent(size)) {
+            return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
+        }
+         size = size.toUpperCase().split(",") 
+        for(let i=0;i<size.length;i++){
+            if(!isValidSize(size[i])){
+                return res.status(400).send({ statu:"false",message:"Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]"})
+            }
+        }  
+        filter.availableSizes={$in:size}
+      }
    
         if(typeof(name)!=="undefined"){
             console.log("name")
@@ -247,9 +261,19 @@ const updateproduct = async function (req, res) {
                 return res.status(400).send({ status: false, message: "Style containt only [a-zA-Z0-9_ ,.-@#()]" })
             }
         }
-        if (typeof(availableSizes)!=="undefined"){
+        if (typeof (availableSizes) !== 'undefined') {
+            if (!isPresent(availableSizes)) {
+                return res.status(400).send({ status: false, message: "availablesizes can't be empty" })
+            }
+            let size = availableSizes.toUpperCase().split(",") 
+            for(let i=0;i<size.length;i++){
+                if(!isValidSize(size[i])){
+                    return res.status(400).send({ statu:"false",message:"Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]"})
+                }
+            }  
+            data.availableSizes = size
+          }
 
-        }
         if (typeof(installments)!=="undefined"){
             if (!/^[0-9]{1,4}$/.test(installments)) {
                 return res.status(400).send({ status: false, message: "Installments must be a integer number and can't be empty" })

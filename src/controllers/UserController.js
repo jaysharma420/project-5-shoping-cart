@@ -139,7 +139,6 @@ const updateUser = async function (req, res) {
     try {
         let data = req.body
         let file = req.files
-// //console.log(file);
         if (Object.keys(data).length == 0 && typeof(file) == 'undefined') return res.status(400).send({ status: false, message: "Please Enter data to update the User" })
 
         if (file && file.length > 0) {
@@ -158,7 +157,7 @@ const updateUser = async function (req, res) {
 
         if (data["address.shipping.pincode"] === "") { return res.status(400).send({ status: false, message: "you can't update shipping pincode as a empty string" }) }
 
-        const { fname, lname, email, phone, password, address } = req.body
+        const { fname, lname, email, phone, password } = req.body
 
         if (fname === "") return res.status(400).send({ status: false, message: "you can't update fname as a empty string" })
         if (lname === "") return res.status(400).send({ status: false, message: "you can't update lname as a empty string" })
@@ -166,8 +165,7 @@ const updateUser = async function (req, res) {
         if (email === "") return res.status(400).send({ status: false, message: "you can't update email as a empty string" })
         if (password === "") return res.status(400).send({ status: false, message: "you can't update password as a empty string" })
 
-
-        if (fname) {
+        if (typeof(fname) !== "undefined") {
             if (!isValidName(fname)) return res.status(400).send({ status: false, message: "Please Provide the valid fname,enter only alphabates" })
         }
         if (lname) {

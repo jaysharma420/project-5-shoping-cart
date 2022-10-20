@@ -51,19 +51,38 @@ return res.status(201).send({status:true,message:"order created",data:createorde
 }
 
 const updateorder = async function(req,res){
+    try {
 let userId = req.params.userId
 let {orderId,status} = req.body
 
-if(typeof(orderId)==="undefined") return res.status(400).send({status:false,mesage:"please enter orderId"})
+if(typeof(orderId)==="undefined" || typeof(status)==="undefined") return res.status(400).send({status:false,mesage:"please enter orderId and status to update"})
 if(!Objectid(orderId))return res.status(400).send({status:false,mesage:"please enter a valid orderid"})
 
 let orderdata = await orderModel.findone({_id:orderId,userId:userId})
 if(!orderdata)return res.status(404).send({status:false,message:"no order found with this orderid and userid"})
-if(orderdata.cancellable==="false")return res.status(404).send({status:false,message:"can't update order status, cancellable key is false"})
+if(!(orderdata.status=="pending")) return res.status(400).send({status:false,message:"this order status is not  pending u can't update"})
+if(orderdata.cancellable=="false")return res.status(404).send({status:false,message:"can't update order status, cancellable key is false"})
 
-if(typeof(status)==="undefined")return res.status(400).send({status:false,message:"please enter status to update"})
+if(orderdata.status==status) return res.status(400).send({status:false,message:"this status is already present enter another one"})
 
-if(orderdata.status===status) return res.status(400).send({status:false,message:"this status is already present enter another one"})
+        if (!['pending', 'completed', 'cancled'].includes(status)) {
+            return res.status(400).send({
+                status: false, message: "STATUS YOU WANT PROVIDED ['pending', 'completed', 'cancled'] ONLY THESE ENUm"
+            })
+
+        }
+        const updateorder = await orderModel.findByIdAndUpdate(
+            { _id: orderId },
+            { $set: { status:status } },
+            { new: true }
+        )
+        console.log(updateorder)
+        if(status=="completed"){return res.status(200).send({ status: true, message: "ORDER completed", data: updateorder })}
+        return res.status(200).send({ status: true, message: "ORDER deleted"})
+        }
+    catch(err){
+        return res.status(500).send({status:false,message:err.message})
+    }  
 
 }
 
