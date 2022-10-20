@@ -20,10 +20,7 @@ const createUser = async function (req, res) {
         
         if (Object.keys(data).length == 0 && typeof(file) == 'undefined') return res.status(400).send({ status: false, message: "Please Enter data to Create the User" })
         if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "Invalid attribute in request body" })
-        // console.log(typeof (fname));
-        // console.log(typeof (phone));
-        // console.log(typeof (address));
-
+        
         if (!isPresent(fname)) return res.status(400).send({ status: false, message: "fname is mandatory" })
         if (!isValidName(fname)) return res.status(400).send({ status: false, message: "Please Provide the valid fname" })
 
@@ -77,6 +74,32 @@ const createUser = async function (req, res) {
         if (!address.hasOwnProperty("shipping")) return res.status(400).send({ status: false, message: "Shipping Address is required " })
         if (!address.hasOwnProperty("billing")) return res.status(400).send({ status: false, message: "billing Address is required " })
 
+        if (Object.keys(remaining).length > 0) return res.status(400).send({ status: false, message: "Invalid attribute in address body" })
+
+        if (typeof shipping !== "object") return res.status(400).send({ status: false, message: "shipping should be an object" })
+        if (!shipping.hasOwnProperty("street")) return res.status(400).send({ status: false, message: "Shipping street is required " })
+        if (!shipping.hasOwnProperty("city")) return res.status(400).send({ status: false, message: "Shipping city is required " })
+        if (!shipping.hasOwnProperty("pincode")) return res.status(400).send({ status: false, message: "Shipping pincode is required " })
+
+        if (!isValids(shipping.street)) return res.status(400).send({ status: false, message: " shipping street is invalid " })
+        if (!isValidName(shipping.city)) return res.status(400).send({ status: false, message: "Shipping city is invalid" })
+        if (!isValidPin(shipping.pincode)) return res.status(400).send({ status: false, message: " shipping pincode is invalid. There must be six digits" })
+
+
+
+        if (typeof billing !== "object") return res.status(400).send({ status: false, message: "billing should be an object" })
+        if (!billing.hasOwnProperty("street")) return res.status(400).send({ status: false, message: "billing street is required " })
+        if (!billing.hasOwnProperty("city")) return res.status(400).send({ status: false, message: "billing city is required " })
+        if (!billing.hasOwnProperty("pincode")) return res.status(400).send({ status: false, message: "billing pincode is required " })
+
+        if (!isValids(billing.street)) return res.status(400).send({ status: false, message: " billing street is invalid " }) 
+        if (!isValids(billing.city)) return res.status(400).send({ status: false, message: "billing city is invalid" })
+        if (!isValidPin(billing.pincode)) return res.status(400).send({ status: false, message: " billing pincode is invalid. There must be six digits" })
+   
+        data.address = address
+       // data.address=address
+        // const profileImg = await imgUpload.uploadFile(files[0])
+        const encyptPassword = await bcrypt.hash(password, 10)
 
         if (file && file.length > 0) {
             data.profileImage = await uploadFile(file[0])
