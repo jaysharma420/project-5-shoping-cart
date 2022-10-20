@@ -39,6 +39,21 @@ const isValid = function(value){
 }
 const isValidSize = function(value){
   return  ["S", "XS","M","X", "L","XXL", "XL"].includes(value)
+
+}
+const parseJSONSafely=(str)=> {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return null
+    }
+}
+const isValids = (value) => {
+    if (typeof value == "undefined" || typeof value == null) return false;    //"",null,undefinded
+    if (typeof value === "string" && value.trim().length === 0) return false; //""
+    return true;
 }
 
-module.exports = {isPresent, isValidName, isValidEmail, isValidImg, isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid,isValidSize}
+module.exports = {isPresent,parseJSONSafely,
+     isValidName, isValidEmail, isValidImg, 
+     isValids ,isValidPhone, isValidPassword, isValidPin,isValidadd,isValidPrice,isValid,isValidSize}

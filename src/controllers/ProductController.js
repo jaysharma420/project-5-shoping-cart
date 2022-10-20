@@ -321,7 +321,11 @@ const deleteproduct = async function (req, res) {
             });
         }
 
-        const mark = await productModel.findOneAndUpdate({ _id: productId }, { $set: { isDeleted: true, deletedAt: Date.now() } });
+        const mark = await productModel.findOneAndUpdate(
+            { _id: productId }, 
+            { $set: { isDeleted: true, deletedAt: Date.now() } },
+            { new: true }
+            );
 
       return   res
             .status(200)
