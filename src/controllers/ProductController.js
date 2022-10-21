@@ -84,7 +84,7 @@ const createproduct = async function (req, res) {
             let size = availableSizes.toUpperCase().split(",")
             for (let i = 0; i < size.length; i++) {
                 if (!isValidSize(size[i])) {
-                    return res.status(400).send({ statu: "false", message: "Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]" })
+                    return res.status(400).send({ status:false, message: "Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]" })
                 }
             }
             data.availableSizes = size
@@ -147,7 +147,7 @@ const getproduct = async function (req, res) {
             size = size.toUpperCase().split(",")
             for (let i = 0; i < size.length; i++) {
                 if (!isValidSize(size[i])) {
-                    return res.status(400).send({ statu: "false", message: "Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]" })
+                    return res.status(400).send({ status:false, message: "Sizes should in this ENUM only [S,XS,M,X,L,XXL,XL]" })
                 }
             }
             filter.availableSizes = { $in: size }
@@ -332,9 +332,7 @@ const deleteproduct = async function (req, res) {
             { new: true }
         );
 
-        return res
-            .status(200)
-            .send({ status: true, message: "Product successfully deleted" });
+        return res.status(200).send({ status: true, message: "Product successfully deleted" });
     } catch (error) {
         return res.status(500).send({ status: false, error: error.message });
     }

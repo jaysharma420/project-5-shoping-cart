@@ -14,10 +14,11 @@ const createorder = async function (req, res) {
         if (!Objectid(cartId)) return res.status(400).send({ status: false, mesage: "please enter a valid carid" })
 
         let orderdata = await orderModel.findOne({ userId: userId })
+        if(orderdata){
         if (orderdata.status == "pending") { return res.status(400).send({ status: false, message: "order already in progress" }) }
         if (orderdata.status == "cancled") { return res.status(400).send({ status: false, message: "order is already cancled" }) }
         if (orderdata.status == "completed") { return res.status(400).send({ status: false, message: "order is already completed" }) }
-
+        }
         const cartdata = await cartModel.findOne({ _id: cartId, userId: userId })
         if (!cartdata) return res.status(400).send({ status: false, mesage: "with this cartid and userid no cart found" })
         if (cartdata.items.length === 0) return res.status(404).send({ status: false, mesage: "no product/cart found" })

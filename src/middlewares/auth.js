@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken')
 const authentication = async function (req, res, next) {
     try {
         // let token = req.headers["authorization"].substring(7)
-        let token = req.headers["authorization"].split(" ")[1]
+        let token = req.headers["authorization"]
         if (!token) { return res.status(400).send({ status: false, message: "please enter token" }) }
         let decodetoken;
         try {
-            decodetoken = jwt.verify(token, "mykey")
+            decodetoken = jwt.verify(token.split(" ")[1], "mykey")
         } catch (err) {
             return res.status(401).send({ status: false, message: err.message })
         }
